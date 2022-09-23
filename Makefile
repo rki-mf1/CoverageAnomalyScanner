@@ -19,13 +19,14 @@ CXXFLAGS += -W -Wall -pedantic
 CXXFLAGS += -march=native
 
 # Linker flags
-LDLIBS += htslib/libhts.a -lz -lpthread -llzma -lbz2
+LDLIBS += htslib/libhts.a -lz -lpthread -llzma -lbz2 -lcurl
 
 # DEBUG   build
 #CXXFLAGS += -g -pg -O0 -DDEBUG
 
 # RELEASE build
 CXXFLAGS += -O3
+CXXFLAGS += -I htslib/
 
 all: $(TARGET)
 
