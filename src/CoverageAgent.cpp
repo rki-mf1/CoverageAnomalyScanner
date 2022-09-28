@@ -2,7 +2,7 @@
 
 
 
-int CoverageAgent::getGenomeCoverage(uint32_t coverages[]){
+int CoverageAgent::getGenomeCoverage(std::vector<uint32_t> &coverages) const{
 
     // load BAM+BAi and fill htslib data structures
     htsFile *bam_file = hts_open(path_, "r");
@@ -54,4 +54,14 @@ int CoverageAgent::getGenomeCoverage(uint32_t coverages[]){
     }
 
     return 0;
+}
+
+void CoverageAgent::getConsecutivePairwiseDifferences(std::vector<uint32_t> &consPairDiff, const std::vector<uint32_t> &coverages) const{
+
+    for (size_t i = 1; i < coverages.size(); ++i){
+
+        const int32_t diff= coverages[i] - coverages[i-1];
+        consPairDiff[i] = std::abs(diff);
+    }
+    
 }

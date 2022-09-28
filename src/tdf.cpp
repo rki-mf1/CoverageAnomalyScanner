@@ -18,9 +18,13 @@ int main(int argc, char const *argv[]){
     CoverageAgent ca(bam_file, bam_chromosome_id, bam_start , bam_end);
 
     const uint l_coverages = bam_end - bam_start;
-    uint32_t coverages[l_coverages] = {0};
+    vector<uint32_t> coverages(l_coverages, 0);
     ca.getGenomeCoverage(coverages);
 
+    vector<uint32_t> consPairDiffs(l_coverages, 0);
+    ca.getConsecutivePairwiseDifferences(consPairDiffs, coverages);
+
+    
 
     return 0;
 }

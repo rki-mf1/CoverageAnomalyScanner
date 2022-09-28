@@ -8,8 +8,10 @@
 #define COVERAGEAGENT_
 
 #include <htslib/sam.h>
-#include <stdint.h>
-#include <iostream>
+#include <stdint.h>     // fixed range integer
+#include <iostream>     // DEBUG ONLY SO FAR
+#include <vector>
+#include <stdlib.h>     // std::abs()
 
 
 
@@ -41,11 +43,20 @@ public:
     /**
      * @fn      getGenomeCoverage
      * @brief   Function to compute the read coverage over a given genomic interval from a BAM file.
-     * @param   coverages is a C-array containing the coverage per base position
+     * @param   coverages is a STL vector containing the coverage per base position
      * @return  0 for success; 1 for internal error
     */
-    int getGenomeCoverage(uint32_t coverages[]);
+    int getGenomeCoverage(std::vector<uint32_t> &coverages) const;
 
+    /**
+     * @fn      getConsecutivePairwiseDifferences
+     * @brief   Function to compute the difference in coverage between consecutive genomic positions.
+     * @param   coverages is a STL vector containing the coverage per base position
+     * @param   consPairDiff is a STL vector containing the pairwise differences of consecutive positions in coverages[].
+     *          Element consPairDiff[i] is the absolute difference between coverages[i-1] and coverage[i].
+     * @return  
+    */
+    void getConsecutivePairwiseDifferences(std::vector<uint32_t> &consPairDiff, const std::vector<uint32_t> &coverages) const;
 
 };
 
