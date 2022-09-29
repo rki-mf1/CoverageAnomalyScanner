@@ -6,7 +6,7 @@ SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
 OBJS := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRCS:.cpp=.o))
 
 # Compiler
-CXX = g++ -std=c++11
+CXX = g++ -std=c++14
 CC = $(CXX)
 
 # Date and version number from git
@@ -19,14 +19,16 @@ CXXFLAGS += -W -Wall -pedantic
 CXXFLAGS += -march=native
 
 # Linker flags
-LDLIBS += htslib/libhts.a -lz -lpthread -llzma -lbz2 -lcurl
+LDLIBS += htslib/libhts.a
+LDLIBS += dlib/dlib/all/source.cpp -DDLIB_NO_GUI_SUPPORT
+LDLIBS += -lz -lpthread -llzma -lbz2 -lcurl
 
 # DEBUG   build
 #CXXFLAGS += -g -pg -O0 -DDEBUG
 
 # RELEASE build
 CXXFLAGS += -O3
-CXXFLAGS += -I htslib/
+CXXFLAGS += -I htslib/ -I dlib/
 
 all: $(TARGET)
 

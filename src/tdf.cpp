@@ -1,4 +1,5 @@
 #include "CoverageAgent.h"
+#include "Kmeans.h"
 
 using namespace std;
 
@@ -24,7 +25,10 @@ int main(int argc, char const *argv[]){
     vector<uint32_t> consPairDiffs(l_coverages, 0);
     ca.getConsecutivePairwiseDifferences(consPairDiffs, coverages);
 
-    
+    Kmeans km;
+    std::pair<uint, uint> centers = km.k2mm_means(consPairDiffs);
+    km.clear();
+
 
     return 0;
 }

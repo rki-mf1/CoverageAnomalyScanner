@@ -19,7 +19,6 @@ int CoverageAgent::getGenomeCoverage(std::vector<uint32_t> &coverages) const{
     uint32_t *cigar; /* CIGAR field from the alignment */
     int n_cigar;    /* Number of cigar operations */
 
-    // TODO
     while(sam_itr_next( bam_file, iter, bam_alignment) > 0){
 		
         cigar = bam_get_cigar(bam_alignment);
