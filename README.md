@@ -17,4 +17,4 @@ make
 
 If the steps above compile successfully there should be a binary `tdf` in your working directory.
 
-[Advanced build] If you have a clone of htslib available already and its archive (_libhts.a_) built then you can omit the `--recursive` flag when cloning the github repository. In this case make sure to adjust the paths in the CXXFLAGS and LDLIBS variables within the Makefile.
+[Advanced build] If you already have a clone of one or multiple submodules available and don't want to download them again then you can omit the `--recursive` flag when cloning the github repository. In this case make sure to adjust the paths in the CXXFLAGS and LDLIBS variables within the Makefile. E.g. for htslib you have to manually set the path to its archive (_libhts.a_).
