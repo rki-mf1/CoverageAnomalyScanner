@@ -1,6 +1,7 @@
 #include "CoverageAgent.h"
 #include "Kmeans.h"
 #include "BreakpointFinder.h"
+#include "VCFwriter.h"
 
 using namespace std;
 
@@ -38,8 +39,11 @@ int main(int argc, char const *argv[]){
     bf.findCoverageThreshold(centers);
     bf.findBreakpoints(consPairDiffs);
 
+    // TODO: nextline is DEBUG only
     cout << bf.getStartBreakpoint() <<", " << bf.getEndBreakpoint() << endl;
 
+    VCFwriter vcfwriter("out.vcf");
+    vcfwriter.init_hdr(bam_file, bam_chromosome_id);
 
     return 0;
 }

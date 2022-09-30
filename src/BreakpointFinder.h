@@ -1,10 +1,10 @@
 /**
  * @file     src/BreakpointFinder.h
- * @brief    This file contains the Class to detect SV breakpoints and write reports in VCF
+ * @brief    This file contains the Class to determine SV breakpoints
  * 
 */
-#ifndef VARIANT_REPORT_
-#define VARIANT_REPORT_
+#ifndef BREAKPOINT_FINDER_
+#define BREAKPOINT_FINDER_
 
 #include <utility>      // std::pair
 #include <math.h>       // std::floor()
@@ -54,4 +54,4 @@ private:
 
 
 
-#endif /* VARIANT_REPORT_ */
+#endif /* BREAKPOINT_FINDER_ */
