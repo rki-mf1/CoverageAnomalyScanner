@@ -1,5 +1,6 @@
 #include "CoverageAgent.h"
 #include "Kmeans.h"
+#include "BreakpointFinder.h"
 
 using namespace std;
 
@@ -7,6 +8,8 @@ using namespace std;
 
 int main(int argc, char const *argv[]){
 
+    // dummy usage to argc to suppress Wunused warning for now
+    (void)argc;
 
     const char *bam_file = argv[1];
     int bam_chromosome_id = stoi(argv[2]);
@@ -26,8 +29,16 @@ int main(int argc, char const *argv[]){
     ca.getConsecutivePairwiseDifferences(consPairDiffs, coverages);
 
     Kmeans km;
-    std::pair<uint, uint> centers = km.k2mm_means(consPairDiffs);
+    std::pair<uint, uint> centers;
+    
+    centers = km.k2mm_means(consPairDiffs);
     km.clear();
+
+    BreakpointFinder bf;
+    bf.findCoverageThreshold(centers);
+    bf.findBreakpoints(consPairDiffs);
+
+    cout << bf.getStartBreakpoint() <<", " << bf.getEndBreakpoint() << endl;
 
 
     return 0;
