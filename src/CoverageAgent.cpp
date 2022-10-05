@@ -55,12 +55,29 @@ int CoverageAgent::getGenomeCoverage(std::vector<uint32_t> &coverages) const{
     return 0;
 }
 
+
 void CoverageAgent::getConsecutivePairwiseDifferences(std::vector<uint32_t> &consPairDiff, const std::vector<uint32_t> &coverages) const{
 
     for (size_t i = 1; i < coverages.size(); ++i){
 
         const int32_t diff= coverages[i] - coverages[i-1];
-        consPairDiff[i] = std::abs(diff);
+        consPairDiff[i] = diff;
     }
     
+}
+
+
+bool CoverageAgent::getConsecutivePairwiseFoldchange(std::vector<float> &foldChange, const std::vector<uint32_t> &coverages, const bool log2) const{
+
+    float fc;
+
+    for (size_t i = 1; i < coverages.size(); ++i){
+        
+        //fc = log2 ? std::log2f(coverages[i] / (float)coverages[i-1]) : coverages[i] / (float)coverages[i-1];
+        fc = std::log2f( coverages[i] / (float)coverages[i-1] );
+
+        foldChange[i] = fc;        
+    }
+    
+    return log2;
 }

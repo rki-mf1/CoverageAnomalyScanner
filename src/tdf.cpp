@@ -1,7 +1,11 @@
 #include "CoverageAgent.h"
-#include "Kmeans.h"
+//#include "Kmeans.h"       // legacy
 #include "BreakpointFinder.h"
 #include "VCFwriter.h"
+
+#ifdef PRINT
+#include <fstream>
+#endif
 
 using namespace std;
 
@@ -26,24 +30,52 @@ int main(int argc, char const *argv[]){
     vector<uint32_t> coverages(l_coverages, 0);
     ca.getGenomeCoverage(coverages);
 
-    vector<uint32_t> consPairDiffs(l_coverages, 0);
-    ca.getConsecutivePairwiseDifferences(consPairDiffs, coverages);
+    //vector<uint32_t> consPairDiffs(l_coverages, 0);
+    //ca.getConsecutivePairwiseDifferences(consPairDiffs, coverages);
 
-    Kmeans km;
-    std::pair<uint, uint> centers;
+    vector<float> xFoldChange(l_coverages, 0);
+    bool log2wasapplied = ca.getConsecutivePairwiseFoldchange(xFoldChange, coverages);
+
+#ifdef PRINT
     
-    centers = km.k2mm_means(consPairDiffs);
-    km.clear();
+    ofstream ocsv;
+    ocsv.open("coverage.csv");
+    if (! ocsv.is_open() ){
+        cerr << "[Error] Could not open file buffer for coverage statistics." << endl;
+    }
+    
+    // print raw coverage
+    ocsv << "raw_coverage";
+    for (size_t i = 0; i < l_coverages; ++i){
+        ocsv << "\t" << coverages[i];
+    }
+    ocsv << "\n";
 
-    BreakpointFinder bf;
-    bf.findCoverageThreshold(centers);
-    bf.findBreakpoints(consPairDiffs);
+    // print pairwise consecutive (log2) x-fold change
+    log2wasapplied ? ocsv << "log2fold_change" : ocsv << "fold_change";
+    for (size_t i = 0; i < l_coverages; ++i){
+        ocsv << "\t" << xFoldChange[i];
+    }
+    ocsv << "\n";
+
+    ocsv.close();
+#endif
+
+    //Kmeans km;
+    //std::pair<uint, uint> centers;
+    
+    //centers = km.k2mm_means(consPairDiffs);
+    //km.clear();
+
+    //BreakpointFinder bf;
+    //bf.findCoverageThreshold(centers);
+    //bf.findBreakpoints(consPairDiffs);
 
     // TODO: nextline is DEBUG only
-    cout << bf.getStartBreakpoint() <<", " << bf.getEndBreakpoint() << endl;
+    //cout << bf.getStartBreakpoint() <<", " << bf.getEndBreakpoint() << endl;
 
-    VCFwriter vcfwriter("out.vcf");
-    vcfwriter.init_hdr(bam_file, bam_chromosome_id);
+    //VCFwriter vcfwriter("out.vcf");
+    //vcfwriter.init_hdr(bam_file, bam_chromosome_id);
 
     return 0;
 }

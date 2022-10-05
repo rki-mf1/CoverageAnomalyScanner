@@ -30,7 +30,12 @@ LDLIBS += -lz -lpthread -llzma -lbz2 -lcurl
 CXXFLAGS += -O3
 CXXFLAGS += -I htslib/ -I dlib/
 
+.PHONY: all
 all: $(TARGET)
+
+.PHONY: print
+print: CXXFLAGS += -DPRINT
+print: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDLIBS)
@@ -38,5 +43,6 @@ $(TARGET): $(OBJS)
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp $(SRC_DIR)/%.h
 	$(CXX) $(CXXFLAGS) $(TOOLS) -c $< -o $@
 
+.PHONY: clean
 clean:
 	rm -f $(OBJS) $(TARGET)

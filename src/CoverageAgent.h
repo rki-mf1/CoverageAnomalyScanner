@@ -11,7 +11,8 @@
 #include <stdint.h>     // fixed range integer
 #include <iostream>     // DEBUG ONLY SO FAR
 #include <vector>
-#include <stdlib.h>     // std::abs()
+//#include <stdlib.h>     // std::abs()
+#include <cmath>        // std::log2()
 
 
 
@@ -57,6 +58,16 @@ public:
      * @return  
     */
     void getConsecutivePairwiseDifferences(std::vector<uint32_t> &consPairDiff, const std::vector<uint32_t> &coverages) const;
+
+    /**
+     * @fn      getConsecutivePairwiseFoldchange
+     * @brief   Function to compute the X-fold change in coverage between consecutive genomic positions.
+     * @param   coverages is a STL vector containing the coverage per base position
+     * @param   foldChange is a STL vector containing the X-fold change in coverage of consecutive genomic positions.
+     * @return  bool if log2 was applied
+    */
+    bool getConsecutivePairwiseFoldchange(std::vector<float> &foldChange, const std::vector<uint32_t> &coverages, const bool log2 = true) const;
+
 
 };
 
