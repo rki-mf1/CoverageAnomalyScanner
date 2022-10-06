@@ -3,6 +3,3 @@
 	url = https://github.com/samtools/htslib.git
 	ignore = dirty
 
-[submodule "dlib"]
-	path = dlib
-	url = https://github.com/davisking/dlib.git
