@@ -6,7 +6,8 @@ SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
 OBJS := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRCS:.cpp=.o))
 
 # Compiler
-CXX = g++ -std=c++14
+#CXX = g++ -std=c++14	// activate this line if dlib has a comeback
+CXX = g++ -std=c++11
 CC = $(CXX)
 
 # Date and version number from git
@@ -20,22 +21,24 @@ CXXFLAGS += -march=native
 
 # Linker flags
 LDLIBS += htslib/libhts.a
-LDLIBS += dlib/dlib/all/source.cpp -DDLIB_NO_GUI_SUPPORT
+#LDLIBS += dlib/dlib/all/source.cpp -DDLIB_NO_GUI_SUPPORT
 LDLIBS += -lz -lpthread -llzma -lbz2 -lcurl
 
-# DEBUG   build
-#CXXFLAGS += -g -pg -O0 -DDEBUG
-
-# RELEASE build
-CXXFLAGS += -O3
-CXXFLAGS += -I htslib/ -I dlib/
+# Additional compiler flags for all builds
+CXXFLAGS += -I htslib/
+#CXXFLAGS += -I dlib/
 
 .PHONY: all
+all: CXXFLAGS += -O3
 all: $(TARGET)
 
 .PHONY: print
-print: CXXFLAGS += -DPRINT
+print: CXXFLAGS += -DPRINT -O3
 print: $(TARGET)
+
+.PHONY: debug
+debug: CXXFLAGS += -g -pg -O0 -DDEBUG
+debug: $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(CC) $(OBJS) -o $@ $(LDLIBS)

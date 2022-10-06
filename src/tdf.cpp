@@ -2,6 +2,7 @@
 //#include "Kmeans.h"       // legacy
 #include "BreakpointFinder.h"
 #include "VCFwriter.h"
+#include <cassert>
 
 #ifdef PRINT
 #include <fstream>
@@ -29,9 +30,6 @@ int main(int argc, char const *argv[]){
     const uint l_coverages = bam_end - bam_start;
     vector<uint32_t> coverages(l_coverages, 0);
     ca.getGenomeCoverage(coverages);
-
-    //vector<uint32_t> consPairDiffs(l_coverages, 0);
-    //ca.getConsecutivePairwiseDifferences(consPairDiffs, coverages);
 
     vector<float> xFoldChange(l_coverages, 0);
     bool log2wasapplied = ca.getConsecutivePairwiseFoldchange(xFoldChange, coverages);
@@ -61,18 +59,18 @@ int main(int argc, char const *argv[]){
     ocsv.close();
 #endif
 
-    //Kmeans km;
-    //std::pair<uint, uint> centers;
-    
-    //centers = km.k2mm_means(consPairDiffs);
-    //km.clear();
+    BreakpointFinder bf;
+    bf.setThreshold(xFoldChange);
 
-    //BreakpointFinder bf;
-    //bf.findCoverageThreshold(centers);
-    //bf.findBreakpoints(consPairDiffs);
+    vector<unsigned> startPos;
+    vector<unsigned>   endPos;
+    bf.findBreakpoints(startPos, endPos, xFoldChange);
 
-    // TODO: nextline is DEBUG only
-    //cout << bf.getStartBreakpoint() <<", " << bf.getEndBreakpoint() << endl;
+    // TODO: next block is DEBUG only
+    assert(startPos.size() == endPos.size());
+    for (size_t idx = 0; idx < startPos.size(); ++idx){
+        cout << "[" << startPos[idx] <<", " << endPos[idx] << "]" << endl;
+    }
 
     //VCFwriter vcfwriter("out.vcf");
     //vcfwriter.init_hdr(bam_file, bam_chromosome_id);

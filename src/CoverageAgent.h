@@ -50,7 +50,7 @@ public:
     int getGenomeCoverage(std::vector<uint32_t> &coverages) const;
 
     /**
-     * @fn      getConsecutivePairwiseDifferences
+     * @fn      [legacy] getConsecutivePairwiseDifferences
      * @brief   Function to compute the difference in coverage between consecutive genomic positions.
      * @param   coverages is a STL vector containing the coverage per base position
      * @param   consPairDiff is a STL vector containing the pairwise differences of consecutive positions in coverages[].

@@ -73,8 +73,7 @@ bool CoverageAgent::getConsecutivePairwiseFoldchange(std::vector<float> &foldCha
 
     for (size_t i = 1; i < coverages.size(); ++i){
         
-        //fc = log2 ? std::log2f(coverages[i] / (float)coverages[i-1]) : coverages[i] / (float)coverages[i-1];
-        fc = std::log2f( coverages[i] / (float)coverages[i-1] );
+        fc = log2 ? std::log2f(coverages[i] / (float)coverages[i-1]) : coverages[i] / (float)coverages[i-1];
 
         foldChange[i] = fc;        
     }
