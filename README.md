@@ -19,10 +19,20 @@ If the steps above compile successfully there should be a binary `cas` in your w
 
 [Advanced build] If you already have a clone of one or multiple submodules available and don't want to download them again then you can omit the `--recursive` flag when cloning the github repository. In this case make sure to adjust the paths in the CXXFLAGS and LDLIBS variables within the Makefile. E.g. for htslib you have to manually set the path to its archive (_libhts.a_).
 
-## Program execution (CLI will get reworked until the final release!)
+## Program execution
 
 ```
-./cas <BAM> <CHROM_ID> <START> <END>
-```
+Usage: cas [-h] --bam FILE [--chr INT] [--start INT] [--end INT]
 
-where \<BAM\> is a set of mapped reads in SAM/BAM alignment format, \<CHROM_ID\> is the 0-based index of a chromosome to from the \<BAM\> header and \<START\>/\<END\> are the chromosome's start and end position, respectively.
+CAS - The Coverage Anomaly Scanner
+
+Optional arguments:
+  -h, --help            shows help message and exits 
+  -v, --version         prints version information and exits 
+  -b, --bam FILE        Read alignment in BAM file format. [required]
+  -c, --chr INT         A 0-based chromosome index from the BAM file. 
+  -s, --start INT       Start position in the chromosome. 
+  -e, --end INT         End position in the chromosome. 
+
+by T. Krannich (2022)
+```
