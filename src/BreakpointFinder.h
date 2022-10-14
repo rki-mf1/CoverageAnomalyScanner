@@ -27,6 +27,8 @@ public:
     /**
      * @fn      findBreakpoints
      * @brief   Function to get the breakpoints from genomic positions that previously showed a strong change in coverage.
+     * @param   startPos vector to store starting SV breakpoints
+     * @param   endPos vector to store ending SV break breakpoints
      * @param   inData is a vector storing the change in coverage between consecutive genomic positions
      * @return  0 for success, 1 for failure
     */

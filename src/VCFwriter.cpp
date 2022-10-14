@@ -2,8 +2,9 @@
 
 
 
-int VCFwriter::init_hdr(const char* f_bam, const int tid) const{
+int VCFwriter::write(const char* f_bam, const int tid, const int window_start_pos, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
 
+    /* ----------------------------- HEADER SECTION --------------------------------- */
 
     bcf_hdr_t *vcf_hdr = bcf_hdr_init("w");
     if (!vcf_hdr){
@@ -16,7 +17,7 @@ int VCFwriter::init_hdr(const char* f_bam, const int tid) const{
 
     // TODO: add timestamp
     // TODO: add program name
-    // TODO: try getting the reference from BAM's @PG:CL field if available (e.g. as with bwa)
+    // TODO: try getting the reference from BAM's @PG:CL field if available (e.g. as with bwa). vcf_validator would really like to see this (warning!). Might add dummy here too.
 
     samFile *bam_buffer = sam_open(f_bam, "r");
     sam_hdr_t *sam_hdr = sam_hdr_read(bam_buffer);
@@ -48,16 +49,58 @@ int VCFwriter::init_hdr(const char* f_bam, const int tid) const{
 
     // write header
     vcfFile *vcf_buffer = bcf_open(this->vcf_file_, "w");
-    int res = bcf_hdr_write(vcf_buffer, vcf_hdr);
+    int res1 = bcf_hdr_write(vcf_buffer, vcf_hdr);
 
-    if (res!=0){
+    if (res1!=0){
         std::cerr << "htslib/vcf.h:bcf_hdr_write() failed." << std::endl;
         return 1;
     }
 
-    // clean up
-    hts_close(vcf_buffer);
+    /* ----------------------------- RECORDS SECTION --------------------------------- */
+    // TODO: implement loop in case there are more DUPs
+
+    bcf1_t *rec = bcf_init1();
+    
+    // set ID
+    rec->rid = (uint32_t)tid;
+    
+    // set POS
+    rec->pos = window_start_pos + startPos[0]; 
+    
+    // set REF + ALT                                        // TODO: more precise REF is --reference is given.
+    bcf_update_alleles_str(vcf_hdr, rec, "N,<DUP>");        // If no reference is given then the starting base is unknown (hence 'N'). Taking the first base according to the mapped reads might be false in case of a SNV or technical error.
+
+    // set QUAL
+    bcf_float_set_missing(rec->qual);
+
+    // set FILTER
+    int32_t vcf_rec_filter[1];
+    vcf_rec_filter[0] = bcf_hdr_id2int(vcf_hdr, BCF_DT_ID, "PASS");
+    bcf_update_filter(vcf_hdr, rec, vcf_rec_filter, 1);
+
+    // set INFO
+    bcf_update_info_string(vcf_hdr, rec, "SVTYPE", "DUP");
+    uint32_t sv_end = window_start_pos + endPos[0];
+    uint32_t sv_len = endPos[0] - startPos[0];
+    uint32_t vcf_rec_info_int32[1];
+    vcf_rec_info_int32[0] = sv_end;
+    bcf_update_info_int32(vcf_hdr, rec, "END", vcf_rec_info_int32, 1);
+    vcf_rec_info_int32[0] = sv_len;
+    bcf_update_info_int32(vcf_hdr, rec, "SVLEN", vcf_rec_info_int32, 1);
+    
+    // FORMAT    
+    // ?
+
+    if (bcf_write(vcf_buffer, vcf_hdr, rec) != 0){
+        std::cerr << "htslib/vcf.h:bcf_write() failed." << std::endl;
+        return 1;
+    }    
+
+    /* ----------------------------- HTSLIB CLEANUP SECTION --------------------------------- */
+    bcf_destroy1(rec);
     bcf_hdr_destroy(vcf_hdr);
+    hts_close(vcf_buffer);
 
     return 0;
 }
+

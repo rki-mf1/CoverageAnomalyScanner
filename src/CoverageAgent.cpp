@@ -25,7 +25,7 @@ int CoverageAgent::getGenomeCoverage(std::vector<uint32_t> &coverages) const{
         bam_alignment_core = bam_alignment->core;
         n_cigar = bam_alignment_core.n_cigar;
 
-        if ((bam_alignment_core.flag&BAM_FQCFAIL) != 0){      /* Don't include alignments that failed the mapper's quality criteria. */
+        if ((bam_alignment_core.flag&BAM_FQCFAIL) != 0){      /* TODO: Don't include alignments that failed the mapper's quality criteria. */
             continue;
         }
 

@@ -68,12 +68,12 @@ int main(int argc, char const *argv[]){
 
     // TODO: next block is DEBUG only
     assert(startPos.size() == endPos.size());
-    for (size_t idx = 0; idx < startPos.size(); ++idx){
-        cout << "[" << startPos[idx] <<", " << endPos[idx] << "]" << endl;
-    }
+    //for (size_t idx = 0; idx < startPos.size(); ++idx){
+    //    cout << "[" << startPos[idx] <<", " << endPos[idx] << "]" << endl;
+    //}
 
-    //VCFwriter vcfwriter("out.vcf");
-    //vcfwriter.init_hdr(bam_file, bam_chromosome_id);
+    VCFwriter vcfwriter("out.vcf");
+    vcfwriter.write(bam_file, bam_chromosome_id, bam_start, startPos, endPos);
 
     return 0;
 }

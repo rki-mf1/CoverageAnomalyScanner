@@ -10,11 +10,13 @@
 #include <htslib/sam.h>
 #include <iostream>
 #include <string>
+#include <vector>
 
 
 class VCFwriter{
 
 private:
+
     const char* vcf_file_;
 
 
@@ -23,18 +25,27 @@ public:
         vcf_file_(ofile)
         {}
 
-
     /**
-     * @fn      init_hdr
+     * @fn      write
      * @brief   Function to write the header for the output VCF file.
      * @param   f_bam is the name of the input BAM file
-     * @param   tid is the 0-based index of the chromosome name as in the BAM file
+     * @param   tid is the 0-based index of the chromosome name as in the BAM file      // TODO: this can be replaced by a pointer to parser
+     * @param   window_start_pos is the start position of the observed genomic window
+     * @param   startPos vector to store starting SV breakpoints
+     * @param   endPos vector to store ending SV break breakpoints
      * @return  0 for success, 1 for failure
     */
-    int init_hdr(const char* f_bam, const int tid) const;
+    int write(const char* f_bam,
+              const int tid,
+              const int window_start_pos,
+              const std::vector<unsigned> &startPos,
+              const std::vector<unsigned> &endPos) const;
 
 
 };
+
+
+
 
 
 
