@@ -1,4 +1,4 @@
-TARGET = tdf
+TARGET = cas
 BUILD_DIR = ./build
 SRC_DIR = ./src
 
