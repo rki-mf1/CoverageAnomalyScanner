@@ -3,3 +3,6 @@
 	url = https://github.com/samtools/htslib.git
 	ignore = dirty
 
+[submodule "argparse"]
+	path = argparse
+	url = https://github.com/p-ranav/argparse.git
