@@ -2,6 +2,7 @@
 //#include "Kmeans.h"       // legacy
 #include "BreakpointFinder.h"
 #include "VCFwriter.h"
+#include "parser.h"
 #include <cassert>
 
 #ifdef PRINT
@@ -14,16 +15,18 @@ using namespace std;
 
 int main(int argc, char const *argv[]){
 
-    // dummy usage to argc to suppress Wunused warning for now
-    (void)argc;
+    argparse::ArgumentParser parser("cas", VERSION);
+    create_parser(parser, argc, argv);
 
-    const char *bam_file = argv[1];
-    int bam_chromosome_id = stoi(argv[2]);
-    int bam_start = stoi(argv[3]) - 1;  /*  HTSlib works with 0-based half-open intervals. Alignment coordinates in SAM format are 1-based.
-                                         *  Hence, in order to match with the intervals of samtools, only the start position is converted here.
-                                         *  Reference: https://github.com/samtools/htslib/blob/36312fb0a06bd59188fd39a860055fbb4dd0dc63/htslib/hts.h#L1190 
-                                        */
-    int bam_end = stoi(argv[4]);
+    const char *bam_file  = parser.get<string>("--bam").c_str();
+    int bam_chromosome_id = parser.get<int>("--chr");
+    /*  HTSlib works with 0-based half-open intervals. Alignment coordinates in SAM format are 1-based.
+    *  Hence, in order to match with the intervals of samtools, only the start position is converted here.
+    *  Reference: https://github.com/samtools/htslib/blob/36312fb0a06bd59188fd39a860055fbb4dd0dc63/htslib/hts.h#L1190 
+    */
+    int bam_start         = parser.get<int>("--start") - 1;
+    int bam_end           = parser.get<int>("--end");
+
 
     CoverageAgent ca(bam_file, bam_chromosome_id, bam_start , bam_end);
 
@@ -68,9 +71,9 @@ int main(int argc, char const *argv[]){
 
     // TODO: next block is DEBUG only
     assert(startPos.size() == endPos.size());
-    //for (size_t idx = 0; idx < startPos.size(); ++idx){
-    //    cout << "[" << startPos[idx] <<", " << endPos[idx] << "]" << endl;
-    //}
+    for (size_t idx = 0; idx < startPos.size(); ++idx){
+        cout << "[" << startPos[idx] <<", " << endPos[idx] << "]" << endl;
+    }
 
     VCFwriter vcfwriter("out.vcf");
     vcfwriter.write(bam_file, bam_chromosome_id, bam_start, startPos, endPos);

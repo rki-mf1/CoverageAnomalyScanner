@@ -6,8 +6,7 @@ SRCS := $(shell find $(SRC_DIR) -type f -name *.cpp)
 OBJS := $(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRCS:.cpp=.o))
 
 # Compiler
-#CXX = g++ -std=c++14	// activate this line if dlib has a comeback
-CXX = g++ -std=c++11
+CXX = g++ -std=c++17
 CC = $(CXX)
 
 # Date and version number from git
@@ -26,6 +25,7 @@ LDLIBS += -lz -lpthread -llzma -lbz2 -lcurl
 
 # Additional compiler flags for all builds
 CXXFLAGS += -I htslib/
+CXXFLAGS += -I argparse/include/
 #CXXFLAGS += -I dlib/
 
 .PHONY: all
