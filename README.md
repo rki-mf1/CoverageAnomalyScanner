@@ -21,8 +21,20 @@ If the steps above compile successfully there should be a binary `cas` in your w
 
 ## Program execution
 
+### Run the CoverageAnomalyScanner
+
+The `cas` program has two intended ways of starting a scan (see examples below). The first example uses three separate input parameters to specify a window of the genome to be scanned. The `--chr` parameter is the zero-based chromosome index from the mandatory BAM file. If the index of the desired chromosome is unclear use `samtools view -H` on the BAM file to determine the index from the `@SQ` fields.
 ```
-Usage: cas [-h] --bam FILE [--chr INT] [--start INT] [--end INT]
+cas --bam FILE --chr 0 --start 400 --end 900
+```
+The second way of starting the program uses the input format of a [SAMTOOLS](http://www.htslib.org/)-like genomic range. Here, the chromosome name itself can be used together with a range.
+```
+cas --bam FILE --range chr1:400-900
+```
+
+### Help
+```
+Usage: cas [-h] --bam FILE [--chr INT] [--start INT] [--end INT] [--range VAR] [--stddev-coeff INT]
 
 CAS - The Coverage Anomaly Scanner
 
@@ -33,6 +45,8 @@ Optional arguments:
   -c, --chr INT         A 0-based chromosome index from the BAM file. 
   -s, --start INT       Start position in the chromosome. 
   -e, --end INT         End position in the chromosome. 
+  -r, --range           Genomic range in SAMTOOLS style, e.g. chr:beg-end 
+  --stddev-coeff INT    Coefficient for the outlier threshold: INT * sd(data) [default: 3]
 
 by T. Krannich (2022)
 ```
