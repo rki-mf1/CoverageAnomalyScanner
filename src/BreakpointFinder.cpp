@@ -1,11 +1,11 @@
 #include "BreakpointFinder.h"
 
 
-void BreakpointFinder::setThreshold(const std::vector<float> &inData){
+void BreakpointFinder::setThreshold(const std::vector<float> &inData, const unsigned coeff){
 
     const float sd = this->sd(inData);
 
-    this->threshold_ = 3 * sd;
+    this->threshold_ = coeff * sd;
 
 }
 
@@ -31,7 +31,7 @@ int BreakpointFinder::findBreakpoints(std::vector<unsigned> &startPos, std::vect
             ++nb_predicted_breakpoint_indexes;
 
             if (is_geq){
-                isPositiveFoldChange[idx] = true;           // the trick is here that only positive fold changes become a '1' and negative stay '0', like the dafault.
+                isPositiveFoldChange[idx] = true;           // the trick is here that only positive fold changes become a '1' and negative stay '0', like the default.
                 ++nb_positive_foldchanges;
             }
         }
@@ -47,7 +47,7 @@ int BreakpointFinder::findBreakpoints(std::vector<unsigned> &startPos, std::vect
         return 1;
     }
 
-    // sanity check for alternating pos/neg fold-changes
+    // sanity check for alternating pos/neg fold-changes    // TODO: this does not report nested events
     bool previous_fold_change = NEGATIVE;                   // assume first fold change in a DUP is positive
     for (size_t it : predicted_breakpoint_indexes){
         if (isPositiveFoldChange[it] != previous_fold_change){

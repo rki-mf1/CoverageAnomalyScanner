@@ -38,9 +38,10 @@ public:
      * @fn      setThreshold
      * @brief   Function to determine the threshold to report a SV breakpoint.
      * @param   inData is a vector of input signals
+     * @param   coeff is a coefficient to determine the outlier threshold
      * @return  void
     */
-    void setThreshold(const std::vector<float> &inData);
+    void setThreshold(const std::vector<float> &inData, const unsigned coeff);
 
 private:
     // tests for greater-equal and less-equal threshold_

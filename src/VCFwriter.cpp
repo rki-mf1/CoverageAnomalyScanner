@@ -2,7 +2,7 @@
 
 
 
-int VCFwriter::write(const char* f_bam, const int tid, const int window_start_pos, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
+int VCFwriter::write(const char* f_bam, const int tid, const int window_start_pos, const unsigned stddev_coeff, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
 
     /* ----------------------------- HEADER SECTION --------------------------------- */
 
@@ -18,6 +18,20 @@ int VCFwriter::write(const char* f_bam, const int tid, const int window_start_po
     // TODO: add timestamp
     // TODO: add program name
     // TODO: try getting the reference from BAM's @PG:CL field if available (e.g. as with bwa). vcf_validator would really like to see this (warning!). Might add dummy here too.
+
+    // add tool name plus version
+    std::string source_line;
+    source_line.append("##source=CoverageAnomalyScanner-");
+    source_line.append(VERSION);
+    const char* c_source_line = source_line.c_str();
+    bcf_hdr_append(vcf_hdr, c_source_line);
+
+    // add standard deviation threshold
+    std::string threshold_line;
+    threshold_line.append("##stddevthreshold=");
+    threshold_line.append(std::to_string(stddev_coeff));
+    const char* c_threshold_line = threshold_line.c_str();
+    bcf_hdr_append(vcf_hdr, c_threshold_line);
 
     samFile *bam_buffer = sam_open(f_bam, "r");
     sam_hdr_t *sam_hdr = sam_hdr_read(bam_buffer);
@@ -104,3 +118,14 @@ int VCFwriter::write(const char* f_bam, const int tid, const int window_start_po
     return 0;
 }
 
+
+int VCFwriter::write_range(argparse::ArgumentParser &parser, range_t &range, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
+
+    const char *bam_file  = parser.get<std::string>("--bam").c_str();
+    const unsigned coeff  = parser.get<unsigned>("--stddev-coeff");
+
+    const int tid = range.tid_;
+    const unsigned start = range.beg_;
+
+    return this->write(bam_file, tid, start, coeff, startPos, endPos);
+}
