@@ -1,11 +1,18 @@
 #include "BreakpointFinder.h"
 
 
-void BreakpointFinder::setThreshold(const std::vector<float> &inData, const unsigned coeff){
+void BreakpointFinder::setThreshold(const float threshold){
+
+    this->threshold_ = threshold;
+
+}
+
+
+void BreakpointFinder::setThreshold(const std::vector<float> &inData){
 
     const float sd = this->sd(inData);
 
-    this->threshold_ = coeff * sd;
+    this->threshold_ = std::max(3 * sd, 0.2f);
 
 }
 

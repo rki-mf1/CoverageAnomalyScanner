@@ -30,11 +30,10 @@ void create_parser(argparse::ArgumentParser &parser, const int argc, char const 
     parser.add_argument("-r", "--range")
         .help("Genomic range in SAMTOOLS style, e.g. chr:beg-end");
 
-    parser.add_argument("--stddev-coeff")
-        .metavar("INT")
-        .help("Coefficient for the outlier threshold: INT * sd(data)")
-        .default_value(3u)
-        .scan<'u', unsigned>();
+    parser.add_argument("--threshold")
+        .metavar("FLOAT")
+        .help("Constant threshold for the anomaly detection. Overwrites the internal default formula.")
+        .scan<'f', float>();
 
     try {
         parser.parse_args(argc, argv);
@@ -64,6 +63,16 @@ void create_parser(argparse::ArgumentParser &parser, const int argc, char const 
     if (!parser.is_used("-c") && !parser.is_used("-r")) {
         throw std::runtime_error("[Parser] One of the input options -c and -r has to be provided.");
     }
+
+    // sanity check: threshold should not be negative
+    if (parser.is_used("--threshold")){
+        const float t = parser.get<float>("--threshold");
+        if (t < 0){
+            throw std::runtime_error("[Parser] --threshold should not be negative.");
+        }
+        
+    }
+    
 }
 
 
@@ -98,15 +107,34 @@ range_t parse_range(argparse::ArgumentParser &parser){
             fprintf(stderr, "[Parser] Failed to parse region\n");
             exit(1);
         }
-#ifdef PRINT
-        printf("[Parser] %-20s %12"PRIhts_pos" %12"PRIhts_pos"\n",
+
+        printf("[Parser]\t%s\t%li\t%li\n",
             return_container.tid_ == -1 ? "*" : hdr->target_name[return_container.tid_],
             return_container.beg_, return_container.end_);
-#endif
+
     }
 
     sam_hdr_destroy(hdr);
     sam_close(fp);
 
     return return_container;
+}
+
+
+void print_parser(argparse::ArgumentParser &parser, const float final_threshold){
+    
+    printf("[Parser]\t%s\n",
+        parser.get<std::string>("--bam").c_str());
+
+    printf("[Parser]\tthreshold=%f\n",
+        final_threshold);
+
+    if (parser.is_used("--chr")){               // --range has it's own print inside parse_range()
+        printf("[Parser]\t%i\t%i\t%i\n",
+            parser.get<int>("--chr"),
+            parser.get<int>("--start"),
+            parser.get<int>("--end"));
+
+    }
+    
 }

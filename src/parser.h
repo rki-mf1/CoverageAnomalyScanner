@@ -22,10 +22,9 @@ typedef struct{
 
 void create_parser(argparse::ArgumentParser &parser, const int argc, char const *argv[]);
 
-
 range_t parse_range(argparse::ArgumentParser &parser);
 
-
+void print_parser(argparse::ArgumentParser &parser, const float final_threshold);
 
 
 

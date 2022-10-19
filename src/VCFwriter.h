@@ -32,7 +32,7 @@ public:
      * @param   f_bam is the name of the input BAM file
      * @param   tid is the 0-based index of the chromosome name as in the BAM file      // TODO: this can be replaced by a pointer to parser
      * @param   window_start_pos is the start position of the observed genomic window
-     * @param   coeff is a coefficient to determine the outlier threshold
+     * @param   final_threshold is the threshold that was ultimately used bythe program
      * @param   startPos vector to store starting SV breakpoints
      * @param   endPos vector to store ending SV break breakpoints
      * @return  0 for success, 1 for failure
@@ -40,7 +40,7 @@ public:
     int write(const char* f_bam,
               const int tid,
               const int window_start_pos,
-              const unsigned stddev_coeff,
+              const float final_threshold,
               const std::vector<unsigned> &startPos,
               const std::vector<unsigned> &endPos) const;
 
@@ -51,6 +51,7 @@ public:
     */
     int write_range(argparse::ArgumentParser &parser,
                     range_t &range,
+                    const float final_threshold,
                     const std::vector<unsigned> &startPos,
                     const std::vector<unsigned> &endPos) const;
 

@@ -2,7 +2,7 @@
 
 
 
-int VCFwriter::write(const char* f_bam, const int tid, const int window_start_pos, const unsigned stddev_coeff, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
+int VCFwriter::write(const char* f_bam, const int tid, const int window_start_pos, const float final_threshold, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
 
     /* ----------------------------- HEADER SECTION --------------------------------- */
 
@@ -28,8 +28,8 @@ int VCFwriter::write(const char* f_bam, const int tid, const int window_start_po
 
     // add standard deviation threshold
     std::string threshold_line;
-    threshold_line.append("##stddevthreshold=");
-    threshold_line.append(std::to_string(stddev_coeff));
+    threshold_line.append("##threshold=");
+    threshold_line.append(std::to_string(final_threshold));
     const char* c_threshold_line = threshold_line.c_str();
     bcf_hdr_append(vcf_hdr, c_threshold_line);
 
@@ -119,13 +119,12 @@ int VCFwriter::write(const char* f_bam, const int tid, const int window_start_po
 }
 
 
-int VCFwriter::write_range(argparse::ArgumentParser &parser, range_t &range, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
+int VCFwriter::write_range(argparse::ArgumentParser &parser, range_t &range, const float final_threshold, const std::vector<unsigned> &startPos, const std::vector<unsigned> &endPos) const{
 
     const char *bam_file  = parser.get<std::string>("--bam").c_str();
-    const unsigned coeff  = parser.get<unsigned>("--stddev-coeff");
 
     const int tid = range.tid_;
     const unsigned start = range.beg_;
 
-    return this->write(bam_file, tid, start, coeff, startPos, endPos);
+    return this->write(bam_file, tid, start, final_threshold, startPos, endPos);
 }

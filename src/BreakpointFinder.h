@@ -6,7 +6,7 @@
 #ifndef BREAKPOINT_FINDER_
 #define BREAKPOINT_FINDER_
 
-#include <algorithm>   // std::transform
+#include <algorithm>   // std::transform, std::max
 #include <numeric>     // std::accumulate, std::inner_product
 #include <cmath>       // std::sqrt
 #include <cstdint>     // fixed range integer
@@ -37,11 +37,18 @@ public:
     /**
      * @fn      setThreshold
      * @brief   Function to set the threshold to report a coverage anomaly.
-     * @param   inData is a vector of input signals
-     * @param   coeff is a coefficient to determine the outlier threshold
+     * @param   threshold is a user defined constant as outlier threshold
      * @return  void
     */
-    void setThreshold(const std::vector<float> &inData, const unsigned coeff);
+    void setThreshold(const float threshold);
+
+    /**
+     * @fn      setThreshold
+     * @brief   Function to set the threshold to report a coverage anomaly.
+     * @param   inData is the vector of signals to automatically determine the outlier threshold
+     * @return  void
+    */
+    void setThreshold(const std::vector<float> &inData);
 
     /**
      * @fn      getThreshold

@@ -49,10 +49,18 @@ int main(int argc, char const *argv[]){
     bool log2wasapplied = ca.getConsecutivePairwiseFoldchange(xFoldChange, coverages);
 
     BreakpointFinder bf;
-    const unsigned coeff = parser.get<unsigned>("--stddev-coeff");
-    bf.setThreshold(xFoldChange, coeff);
+    if (parser.is_used("--threshold")){
+        const float user_threshold = parser.get<float>("--threshold");
+        bf.setThreshold(user_threshold);
+    }
+    else{
+        bf.setThreshold(xFoldChange);
+    }
 
-#ifdef PRINT
+    const float final_threshold = bf.getThreshold();
+    print_parser(parser, final_threshold);    
+
+#ifdef PRINT            // write CSV
     
     ofstream ocsv;
     ocsv.open("coverage.csv");
@@ -76,7 +84,7 @@ int main(int argc, char const *argv[]){
 
     // print coverage threshold
     const float thr = bf.getThreshold();
-    ocsv << "stddev_threshold\t" << thr << "\n";
+    ocsv << "threshold\t" << thr << "\n";
 
     ocsv.close();
 #endif
@@ -85,16 +93,23 @@ int main(int argc, char const *argv[]){
     vector<unsigned>   endPos;
     bf.findBreakpoints(startPos, endPos, xFoldChange);
 
-    // TODO: next block is DEBUG only
+    // Report pairs (if possible)
     assert(startPos.size() == endPos.size());
+    if (startPos.size() == 0){
+        cout << "[Window positions]\t<NO POSITIONS REPORTED>\n";
+        return 0;
+    }
+    
+
+    cout << "[Window positions]\t";
     for (size_t idx = 0; idx < startPos.size(); ++idx){
-        cout << "[" << startPos[idx] <<", " << endPos[idx] << "]" << endl;
+        cout << "(" << startPos[idx] <<", " << endPos[idx] << ")" << endl;
     }
 
-    VCFwriter vcfwriter("out.vcf");
+    VCFwriter vcfwriter("predictedEvents.vcf");
     (parser.is_used("--range")) ?
-        vcfwriter.write_range(parser, r, startPos, endPos) :
-        vcfwriter.write(bam_file, bam_chromosome_id, bam_start, coeff, startPos, endPos);
+        vcfwriter.write_range(parser, r, final_threshold, startPos, endPos) :
+        vcfwriter.write(bam_file, bam_chromosome_id, bam_start, final_threshold, startPos, endPos);
 
     return 0;
 }
