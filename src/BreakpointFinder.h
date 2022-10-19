@@ -36,12 +36,20 @@ public:
 
     /**
      * @fn      setThreshold
-     * @brief   Function to determine the threshold to report a SV breakpoint.
+     * @brief   Function to set the threshold to report a coverage anomaly.
      * @param   inData is a vector of input signals
      * @param   coeff is a coefficient to determine the outlier threshold
      * @return  void
     */
     void setThreshold(const std::vector<float> &inData, const unsigned coeff);
+
+    /**
+     * @fn      getThreshold
+     * @brief   Function returning the coverage anomaly threshold.
+     * @return  float
+    */
+    float getThreshold() const;
+
 
 private:
     // tests for greater-equal and less-equal threshold_

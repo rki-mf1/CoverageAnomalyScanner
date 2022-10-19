@@ -48,6 +48,10 @@ int main(int argc, char const *argv[]){
     vector<float> xFoldChange(l_coverages, 0);
     bool log2wasapplied = ca.getConsecutivePairwiseFoldchange(xFoldChange, coverages);
 
+    BreakpointFinder bf;
+    const unsigned coeff = parser.get<unsigned>("--stddev-coeff");
+    bf.setThreshold(xFoldChange, coeff);
+
 #ifdef PRINT
     
     ofstream ocsv;
@@ -70,12 +74,12 @@ int main(int argc, char const *argv[]){
     }
     ocsv << "\n";
 
+    // print coverage threshold
+    const float thr = bf.getThreshold();
+    ocsv << "stddev_threshold\t" << thr << "\n";
+
     ocsv.close();
 #endif
-
-    BreakpointFinder bf;
-    const unsigned coeff = parser.get<unsigned>("--stddev-coeff");
-    bf.setThreshold(xFoldChange, coeff);
 
     vector<unsigned> startPos;
     vector<unsigned>   endPos;

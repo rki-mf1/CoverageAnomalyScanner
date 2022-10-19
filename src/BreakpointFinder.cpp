@@ -10,6 +10,11 @@ void BreakpointFinder::setThreshold(const std::vector<float> &inData, const unsi
 }
 
 
+float BreakpointFinder::getThreshold() const{
+        return this->threshold_;
+}
+
+
 int BreakpointFinder::findBreakpoints(std::vector<unsigned> &startPos, std::vector<unsigned> &endPos, const std::vector<float> &inData) const{
 
     std::vector<bool> isPositiveFoldChange(inData.size(), false);
