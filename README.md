@@ -1,6 +1,15 @@
 # CAS - The Coverage Anomaly Scanner 
 Tool to find, interpret and convert unexpected changes in read coverage in genomic sequence data
 
+## Table of Contents
+1. [Installation](#installation) <br>
+    1.1 [Dependencies](#dependencies) <br>
+    1.2 [Build](#build) <br>
+2. [Program execution](#program-execution) <br>
+    2.1 [Run the CoverageAnomalyScanner](#run-the-coverageanomalyscanner) <br>
+    2.2 [Help](#help) <br>
+    2.3 [Visualizing CAS' metadata](#visualizing-cas-metadata) <br>
+
 ## Installation
 
 ### Dependencies
@@ -21,8 +30,20 @@ If the steps above compile successfully there should be a binary `cas` in your w
 
 ## Program execution
 
+### Run the CoverageAnomalyScanner
+
+The `cas` program has two intended ways of starting a scan (see examples below). The first example uses three separate input parameters to specify a window of the genome to be scanned. The `--chr` parameter is the zero-based chromosome index from the mandatory BAM file. If the index of the desired chromosome is unclear use `samtools view -H` on the BAM file to determine the index from the `@SQ` fields.
 ```
-Usage: cas [-h] --bam FILE [--chr INT] [--start INT] [--end INT]
+cas --bam FILE --chr 0 --start 400 --end 900
+```
+The second way of starting the program uses the input format of a [SAMTOOLS](http://www.htslib.org/)-like genomic range. Here, the chromosome name itself can be used together with a range.
+```
+cas --bam FILE --range chr1:400-900
+```
+
+### Help
+```
+Usage: cas [-h] --bam FILE [--chr INT] [--start INT] [--end INT] [--range VAR] [--stddev-coeff INT]
 
 CAS - The Coverage Anomaly Scanner
 
@@ -33,6 +54,23 @@ Optional arguments:
   -c, --chr INT         A 0-based chromosome index from the BAM file. 
   -s, --start INT       Start position in the chromosome. 
   -e, --end INT         End position in the chromosome. 
+  -r, --range           Genomic range in SAMTOOLS style, e.g. chr:beg-end 
+  --stddev-coeff INT    Coefficient for the outlier threshold: INT * sd(data) [default: 3]
 
 by T. Krannich (2022)
 ```
+
+### Visualizing CAS' metadata
+
+The GitHub repository provides a subfolder _util_ with a R script to visualize the metadata that `cas` is generating to determine coverage anomalies. The metadata itself is only written to disc if the program is (re)compiled with
+```
+make print
+```
+instead of only `make` as described in the [Build](#build) section. When using the printing program binary of `cas` a program execution generates a _coverage.csv_ (CSV) in the current working directory. The R script inside the _util_ subfolder reads the CSV file and generates plots which visualize the metadata. Make sure the CSV resides within the same folder as the R script or adjust the path in line
+```R
+coverage <- read.delim("coverage.csv", header=FALSE, row.names=1)
+```
+accordingly.
+
+
+[BACK TO TOP](#table-of-contents)
