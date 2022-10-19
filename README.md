@@ -57,7 +57,7 @@ accordingly.
 
 ### Help
 ```
-Usage: cas [-h] --bam FILE [--chr INT] [--start INT] [--end INT] [--range VAR] [--stddev-coeff INT]
+Usage: cas [-h] --bam FILE [--chr INT] [--start INT] [--end INT] [--range VAR] [--threshold FLOAT]
 
 CAS - The Coverage Anomaly Scanner
 
@@ -69,7 +69,7 @@ Optional arguments:
   -s, --start INT       Start position in the chromosome. 
   -e, --end INT         End position in the chromosome. 
   -r, --range           Genomic range in SAMTOOLS style, e.g. chr:beg-end 
-  --stddev-coeff INT    Coefficient for the outlier threshold: INT * sd(data) [default: 3]
+  --threshold FLOAT     Constant threshold for the anomaly detection. Overwrites the internal default formula. 
 
 by T. Krannich (2022)
 ```
