@@ -28,9 +28,9 @@ public:
 
     /**
      * @fn      write
-     * @brief   Function to write the header for the output VCF file.
+     * @brief   Function to write the output VCF file.
      * @param   f_bam is the name of the input BAM file
-     * @param   tid is the 0-based index of the chromosome name as in the BAM file      // TODO: this can be replaced by a pointer to parser
+     * @param   tid is the 0-based index of the chromosome name as in the BAM file
      * @param   window_start_pos is the start position of the observed genomic window
      * @param   final_threshold is the threshold that was ultimately used bythe program
      * @param   startPos vector to store starting SV breakpoints

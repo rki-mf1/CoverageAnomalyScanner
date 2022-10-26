@@ -4,6 +4,8 @@
 #include "VCFwriter.h"
 #include "parser.h"
 #include <cassert>
+#include "BEDwriter.h"
+
 
 #ifdef PRINT
 #include <fstream>
@@ -37,6 +39,12 @@ int main(int argc, char const *argv[]){
         bam_chromosome_id = parser.get<int>("--chr");
         bam_start         = parser.get<int>("--start") - 1;
         bam_end           = parser.get<int>("--end");
+
+        /* TODO: The following three line are for consistency only. The program should
+           ultimately only use range_t over three separate variables. */
+        r.tid_ = bam_chromosome_id;
+        r.beg_ = bam_start;
+        r.end_ = bam_end;
     }
 
     CoverageAgent ca(bam_file, bam_chromosome_id, bam_start , bam_end);
@@ -98,18 +106,29 @@ int main(int argc, char const *argv[]){
     if (startPos.size() == 0){
         cout << "[Window positions]\t<NO POSITIONS REPORTED>\n";
         return 0;
-    }
-    
+    }    
 
+    // print positions
     cout << "[Window positions]\t";
     for (size_t idx = 0; idx < startPos.size(); ++idx){
-        cout << "(" << startPos[idx] <<", " << endPos[idx] << ")" << endl;
+        cout << "[" << startPos[idx] <<", " << endPos[idx] << ")" << endl;
     }
 
+    // write BED file   (records are 0-based half-closed-half-open intervals)
+    BEDwriter bedwriter("predictedEvents.bed");
+    (bedwriter.write(bam_file, r, startPos, endPos)) ?
+        cerr << "[Output] Warning: Couldn't write BED file." << endl :
+        cout << "[Output] Wrote BED file." << endl;
+
+    // write VCF file   (records are 1-based closed intervals)
     VCFwriter vcfwriter("predictedEvents.vcf");
+    int ret_vcf_failed = 0;
     (parser.is_used("--range")) ?
-        vcfwriter.write_range(parser, r, final_threshold, startPos, endPos) :
-        vcfwriter.write(bam_file, bam_chromosome_id, bam_start, final_threshold, startPos, endPos);
+        ret_vcf_failed = vcfwriter.write_range(parser, r, final_threshold, startPos, endPos) :
+        ret_vcf_failed = vcfwriter.write(bam_file, bam_chromosome_id, bam_start, final_threshold, startPos, endPos);
+    (ret_vcf_failed) ?
+        cerr << "[Output] Warning: Couldn't write VCF file." << endl :
+        cout << "[Output] Wrote VCF file." << endl;
 
     return 0;
 }
