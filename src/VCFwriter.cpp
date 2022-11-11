@@ -28,7 +28,7 @@ int VCFwriter::write(const char* f_bam, const int tid, const int window_start_po
 
     // add standard deviation threshold
     std::string threshold_line;
-    threshold_line.append("##threshold=");
+    threshold_line.append("##CAS-threshold=");
     threshold_line.append(std::to_string(final_threshold));
     const char* c_threshold_line = threshold_line.c_str();
     bcf_hdr_append(vcf_hdr, c_threshold_line);

@@ -18,7 +18,7 @@ Tool to find, interpret and convert unexpected changes in read coverage in genom
 
 ### Build
 ```
-git clone https://github.com/Krannich479/CoverageAnomalyScanner.git --recursive
+git clone https://github.com/rki-mf1/CoverageAnomalyScanner.git --recursive
 cd CoverageAnomalyScanner 
 make -C htslib
 mkdir build
