@@ -16,7 +16,7 @@ jobs:
     - name: Build CAS
       run: |
         sudo apt-get update -y
-        sudo apt-get install -y lzma libbz2-dev
+        sudo apt-get install -y lzma libbz2-dev libcurl-dev
         git submodule init
         git submodule update --init --recursive
         make -C htslib
