@@ -1,6 +1,7 @@
 # CAS - The Coverage Anomaly Scanner
 
 [![C/C++ CI](https://github.com/rki-mf1/CoverageAnomalyScanner/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/rki-mf1/CoverageAnomalyScanner/actions/workflows/c-cpp.yml)
+[![Version](https://img.shields.io/github/v/release/rki-mf1/CoverageAnomalyScanner)](https://github.com/rki-mf1/CoverageAnomalyScanner/releases/latest)
 
 Tool to find, interpret and convert unexpected changes in read coverage in genomic sequence data
 
