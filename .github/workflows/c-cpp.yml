@@ -25,7 +25,7 @@ jobs:
     - name: Run test
       run: |
         tar -xvzf test/DUP180.tar.gz
-        cas --bam 180.sub.bam --range chr1:6400-6900
+        ./cas --bam 180.sub.bam --range chr1:6400-6900
         if [ "$(tail -n 1 predictedEvents.bed | cut -f 1)" = "chr1" ]; then return 0; else return 1; fi
         if [ "$(tail -n 1 predictedEvents.bed | cut -f 2)" = "6567" ]; then return 0; else return 1; fi
         if [ "$(tail -n 1 predictedEvents.bed | cut -f 3)" = "6751" ]; then return 0; else return 1; fi
