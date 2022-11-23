@@ -10,8 +10,8 @@ CXX = g++ -std=c++17
 CC = $(CXX)
 
 # Date and version number from git
-DATE = on $(shell git log --pretty=format:"%cd" --date=iso | cut -f 1,2 -d " " | head -n 1)
-VERSION = 0.2.2-$(shell git log --pretty=format:"%h" --date=iso | head -n 1)
+DATE = on 2022-11-23
+VERSION = 0.2.3
 CXXFLAGS = -DDATE=\""$(DATE)"\" -DVERSION=\""$(VERSION)"\"
 
 # Compiler flags
