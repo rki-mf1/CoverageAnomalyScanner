@@ -10,20 +10,20 @@ CXX=g++ -std=c++17
 CC=$(CXX)
 
 # Compiler flags
-CXXFLAGS=-W -Wall -pedantic -march=native
+override CXXFLAGS+=-W -Wall -pedantic -march=native
 
 # Additional libraries for compilation of all builds types
-CXXFLAGS+=-I htslib/
-CXXFLAGS+=-I argparse/include/
+override CXXFLAGS+=-I htslib/
+override CXXFLAGS+=-I argparse/include/
 
 # Libraries for the linker
-LDLIBS=htslib/libhts.a
-LDLIBS+=-lz -lpthread -llzma -lbz2 -lcurl
+override LDLIBS+=htslib/libhts.a
+override LDLIBS+=-lz -lpthread -llzma -lbz2 -lcurl
 
 # Date and version
 DATE=on 2022-11-24
 VERSION=0.2.3
-CXXFLAGS+=-DDATE=\""$(DATE)"\" -DVERSION=\""$(VERSION)"\"
+override CXXFLAGS+=-DDATE=\""$(DATE)"\" -DVERSION=\""$(VERSION)"\"
 
 .PHONY: all
 all: CXXFLAGS+=-O3
