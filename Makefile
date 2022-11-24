@@ -9,22 +9,21 @@ OBJS=$(patsubst $(SRC_DIR)/%,$(BUILD_DIR)/%,$(SRCS:.cpp=.o))
 CXX=g++ -std=c++17
 CC=$(CXX)
 
-# Date and version number from git
-DATE=on 2022-11-23
-VERSION=0.2.4
-CXXFLAGS=-DDATE=\""$(DATE)"\" -DVERSION=\""$(VERSION)"\"
-
 # Compiler flags
-CXXFLAGS+=-W -Wall -pedantic
-CXXFLAGS+=-march=native
+CXXFLAGS=-W -Wall -pedantic -march=native
 
-# Linker flags
+# Additional libraries for compilation of all builds types
+CXXFLAGS+=-I htslib/
+CXXFLAGS+=-I argparse/include/
+
+# Libraries for the linker
 LDLIBS=htslib/libhts.a
 LDLIBS+=-lz -lpthread -llzma -lbz2 -lcurl
 
-# Additional compiler flags for all builds
-CXXFLAGS+=-I htslib/
-CXXFLAGS+=-I argparse/include/
+# Date and version
+DATE=on 2022-11-24
+VERSION=0.2.3
+CXXFLAGS+=-DDATE=\""$(DATE)"\" -DVERSION=\""$(VERSION)"\"
 
 .PHONY: all
 all: CXXFLAGS+=-O3
