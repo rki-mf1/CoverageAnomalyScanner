@@ -2,6 +2,7 @@
 
 [![C/C++ CI](https://github.com/rki-mf1/CoverageAnomalyScanner/actions/workflows/c-cpp.yml/badge.svg)](https://github.com/rki-mf1/CoverageAnomalyScanner/actions/workflows/c-cpp.yml)
 [![Version](https://img.shields.io/github/v/release/rki-mf1/CoverageAnomalyScanner)](https://github.com/rki-mf1/CoverageAnomalyScanner/releases/latest)
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/coverageanomalyscanner/README.html)
 
 Tool to find, interpret and convert unexpected changes in read coverage in genomic sequence data
 
