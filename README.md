@@ -9,7 +9,8 @@ Tool to find, interpret and convert unexpected changes in read coverage in genom
 ## Table of Contents
 1. [Installation](#installation) <br>
     1.1 [Dependencies](#dependencies) <br>
-    1.2 [Build](#build) <br>
+    1.2 [Install with bioconda](#install-with-bioconda)<br>
+    1.3 [Build from source](#build-from-source) <br>
 2. [Program execution](#program-execution) <br>
     2.1 [Running the CoverageAnomalyScanner](#running-the-coverageanomalyscanner) <br>
     2.2 [Output](#output) <br>
@@ -19,9 +20,14 @@ Tool to find, interpret and convert unexpected changes in read coverage in genom
 ## Installation
 
 ### Dependencies
-`cas` was implemented with a 64-bit Linux environment in mind. Using other operating systems might break its functionality and is not maintained. The `cas` repository comes with git submodules by default, i.e. there is no need to install dependencies manually. However, in order to build [htslib](https://github.com/samtools/htslib) make sure you have _libbz2_ and _liblzma_ available on your system. To build the `cas` binary from source you need a C++ compiler that supports the C++17 standard (tested with gcc v9.4.0, but should require only gcc >=v8.3.0).
+_cas_ was implemented with a 64-bit Linux environment in mind. Using other operating systems might break its functionality and are not maintained. The easiest way to install _cas_ is with bioconda.  If you like to build _cas_ from source then follow the description in the [Build from source](#build-from-source) section. The _cas_ repository comes with git submodules by default, i.e. there is no need to install direct dependencies manually. However, in order to build [htslib](https://github.com/samtools/htslib) from source make sure you have _libbz2_ and _liblzma_ available on your system, e.g. with root privileges on ubuntu linux use `sudo apt install libbz2-dev lzma`. To build the _cas_ binary from source you need a C++ compiler that supports the C++17 standard (tested with gcc v9.4.0, but should require only gcc >=v8.3.0).
 
-### Build
+### Install with bioconda
+```
+conda install -c bioconda coverageanomalyscanner
+```
+
+### Build from source
 ```
 git clone https://github.com/rki-mf1/CoverageAnomalyScanner.git --recursive
 cd CoverageAnomalyScanner 
