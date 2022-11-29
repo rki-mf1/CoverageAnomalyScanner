@@ -60,7 +60,7 @@ The GitHub repository provides a subfolder _util_ with a R script to visualize t
 ```
 make print
 ```
-instead of only `make` as described in the [Build](#build) section. When using the printing program binary of `cas` a program execution generates a _coverage.csv_ (CSV) in the current working directory. The R script inside the _util_ subfolder reads the CSV file and generates plots which visualize the metadata. Make sure the CSV resides within the same folder as the R script or adjust the path in line
+instead of only `make` as described in the [Build from source](#build-from-source) section. When using the printing program binary of `cas` a program execution generates a _coverage.csv_ (CSV) in the current working directory. The R script inside the _util_ subfolder reads the CSV file and generates plots which visualize the metadata. Make sure the CSV resides within the same folder as the R script or adjust the path in line
 ```R
 coverage <- read.delim("coverage.csv", header=FALSE, row.names=1)
 ```
