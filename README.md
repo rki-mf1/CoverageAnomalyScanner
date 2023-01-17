@@ -53,11 +53,20 @@ The GitHub repository provides a subfolder _util_ with a R script to visualize t
 ```
 make print
 ```
-instead of only `make` as described in the [Build](#build) section. When using the printing program binary of `cas` a program execution generates a _coverage.csv_ (CSV) in the current working directory. The R script inside the _util_ subfolder reads the CSV file and generates plots which visualize the metadata. Make sure the CSV resides within the same folder as the R script or adjust the path in line
+
+instead of only `make` as described in the [Build](#build) section. When using the printing program binary of `cas` a program execution generates a _coverage.csv_ (CSV) in the current working directory. The R script inside the _util_ subfolder reads the CSV file and generates plots which visualize the metadata. The most convenient method to generate the plots is to use R from the command line
+```bash
+chmod +x <path/to/util>/covplot.R
+Rscript <path/to/util>/covplot.R <path/to>/coverage.csv
+```
+ 
+The commands above generate a _Rplots.pdf_ file with plots. If there is no Rscript command line application available in your working environment the plots can be manually generated in R via
 ```R
 coverage <- read.delim("coverage.csv", header=FALSE, row.names=1)
 ```
-accordingly.
+
+and an execution of the `VARIABLES` and `PLOTS` sections of the _covplot.R_.
+
 
 ### Help
 ```
