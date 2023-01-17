@@ -1,4 +1,13 @@
-coverage <- read.delim("coverage.csv", header=FALSE, row.names=1)
+#!/usr/bin/env Rscript --vanilla
+
+args=commandArgs(trailingOnly=TRUE)
+coverage <- ''
+if (is.na(args[1]) || args[1] == '') {
+    coverage <- read.delim("coverage.csv", header=FALSE, row.names=1)    
+    writeLines("No command line argument found. Presuming input file is coverage.csv by CAS.")
+} else {
+    coverage <- read.delim(args[1], header=FALSE, row.names=1)
+}
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~ VARIABLES ~~~~~~~~~~~~~~~~~~~~~~~
