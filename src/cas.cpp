@@ -17,13 +17,17 @@ using namespace std;
 
 int main(int argc, char const *argv[]){
 
+    /*******************/
+    /**     PARSE      */
+    /*******************/
+
     argparse::ArgumentParser parser("cas", VERSION);
     create_parser(parser, argc, argv);
     
     const char *bam_file  = parser.get<string>("--bam").c_str();
 
     int bam_chromosome_id;
-    int bam_start;                  /*  HTSlib works with 0-based half-open intervals. Alignment coordinates in SAM format are 1-based. Hence, in order to match with the intervals of samtools, only the start position is converted here. Reference: https://github.com/samtools/htslib/blob/36312fb0a06bd59188fd39a860055fbb4dd0dc63/htslib/hts.h#L1190 */
+    int bam_start;
     int bam_end;
     
     range_t r;
@@ -32,12 +36,12 @@ int main(int argc, char const *argv[]){
         r = parse_range(parser);
     
         bam_chromosome_id = r.tid_;
-        bam_start         = r.beg_;     // htslib adjusts this automatically
+        bam_start         = r.beg_;     // htslib adjusts the SAMTOOLS-like range string automatically, nothing to do here as in else case
         bam_end           = r.end_;
     }
     else{
         bam_chromosome_id = parser.get<int>("--chr");
-        bam_start         = parser.get<int>("--start") - 1;
+        bam_start         = parser.get<int>("--start") - 1;     /*  HTSlib works with 0-based half-open intervals. Alignment coordinates in SAM format are 1-based. Hence, in order to match with the intervals of samtools, only the start position is converted here. Reference: https://github.com/samtools/htslib/blob/36312fb0a06bd59188fd39a860055fbb4dd0dc63/htslib/hts.h#L1190 */
         bam_end           = parser.get<int>("--end");
 
         /* TODO: The following three line are for consistency only. The program should
@@ -46,6 +50,10 @@ int main(int argc, char const *argv[]){
         r.beg_ = bam_start;
         r.end_ = bam_end;
     }
+
+    /*******************/
+    /**    COVERAGE    */
+    /*******************/
 
     CoverageAgent ca(bam_file, bam_chromosome_id, bam_start , bam_end);
 
@@ -97,9 +105,17 @@ int main(int argc, char const *argv[]){
     ocsv.close();
 #endif
 
+    /*******************/
+    /**    BREAKPOINTS */
+    /*******************/
+
     vector<unsigned> startPos;
     vector<unsigned>   endPos;
     bf.findBreakpoints(startPos, endPos, xFoldChange);
+
+    /*******************/
+    /**    OUTPUT      */
+    /*******************/
 
     // Report pairs (if possible)
     assert(startPos.size() == endPos.size());

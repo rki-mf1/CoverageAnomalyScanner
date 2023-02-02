@@ -24,67 +24,89 @@ float BreakpointFinder::getThreshold() const{
 
 int BreakpointFinder::findBreakpoints(std::vector<unsigned> &startPos, std::vector<unsigned> &endPos, const std::vector<float> &inData) const{
 
-    std::vector<bool> isPositiveFoldChange(inData.size(), false);
-    unsigned nb_positive_foldchanges = 0;
-
-    std::vector<unsigned> predicted_breakpoint_indexes;
-    unsigned nb_predicted_breakpoint_indexes = 0;
+    std::vector<bool> significantPositiveFoldChanges(inData.size(), false);
+    std::vector<bool> significantNegativeFoldChanges(inData.size(), false);
+    unsigned nb_significant_positive_foldchanges = 0;
+    unsigned nb_significant_negative_foldchanges = 0;
     
     // TODO: for now we only consider non-nested (tandem) duplications being present in the window under investigation
     // TODO: implement a rescue/warning/report mechanism here if the breakpoint pattern does not indicate consecutive DUP / other artifacts
 
-    bool is_geq = false;
     for (size_t idx = 1; idx < inData.size(); ++idx){         // idx=0 == '0' because of the pairwise normalization in the window
         
-        is_geq = geqt(inData[idx]);
-        if (is_geq || leqt(inData[idx])) {
-            
-            predicted_breakpoint_indexes.push_back(idx);
-            ++nb_predicted_breakpoint_indexes;
-
-            if (is_geq){
-                isPositiveFoldChange[idx] = true;           // the trick is here that only positive fold changes become a '1' and negative stay '0', like the default.
-                ++nb_positive_foldchanges;
-            }
+        if(geqt(inData[idx])){
+            significantPositiveFoldChanges[idx] = true;
+            ++nb_significant_positive_foldchanges;
         }
+
+        if (leqt(inData[idx])){
+            significantNegativeFoldChanges[idx] = true;
+            ++nb_significant_negative_foldchanges;
+        }
+
     }
 
     // sanity check: at least 2 breakpoints in window
-    if (nb_predicted_breakpoint_indexes < 2){
+    if ((nb_significant_positive_foldchanges + nb_significant_negative_foldchanges) < 2){
+        fprintf(stdout, "[BreakpointFinder] There are less than two predicted breakpoints in the window.\n");
         return 1;
     }
     
     // sanity check: number of opening breakpoints are equal to number of closing breakpoints
-    if ((float)nb_predicted_breakpoint_indexes / 2  != (float)nb_positive_foldchanges){
-        return 1;
+    if (nb_significant_negative_foldchanges != nb_significant_positive_foldchanges){
+        fprintf(stdout, "[BreakpointFinder] Number of positive and negative coverage foldchanges are not equal.\n");
+        return 2;
     }
 
-    // sanity check for alternating pos/neg fold-changes    // TODO: this does not report nested events
-    bool previous_fold_change = NEGATIVE;                   // assume first fold change in a DUP is positive
-    for (size_t it : predicted_breakpoint_indexes){
-        if (isPositiveFoldChange[it] != previous_fold_change){
-            previous_fold_change = !previous_fold_change;
+    // sanity check for DUP pattern here
+    bool is_dup_pattern = verify_DUP_pattern(significantPositiveFoldChanges, significantNegativeFoldChanges);
+
+
+    // TODO: sanity check for DEL pattern here
+
+
+    // augment return vectors with window indexes
+    if(is_dup_pattern){
+        for (unsigned i=0 ; i < significantPositiveFoldChanges.size(); ++i){
+            if (significantPositiveFoldChanges[i]){
+                startPos.push_back(i);
+            }
+            
+            if (significantNegativeFoldChanges[i]){
+                endPos.push_back(i);
+            }
+            
         }
-        else{
-            return 1;
-        }
-    }
-    
-    // actual breakend reporting
-    bool fold_change = POSITIVE;
-    for (size_t it : predicted_breakpoint_indexes){
-        if (fold_change){
-            startPos.push_back(it);
-            fold_change = NEGATIVE;
-        }
-        else{
-            endPos.push_back(it);
-            fold_change = POSITIVE;
-        }
-        
     }
     
     return 0;
+}
+
+
+inline bool BreakpointFinder::verify_DUP_pattern(const std::vector<bool> &posChanges, const std::vector<bool> &negChanges) const{
+
+    int stack = 0;
+
+    assert(posChanges.size() == negChanges.size());
+
+    for (size_t i = 0; i < posChanges.size(); ++i){
+        
+        if (posChanges[i]){
+            ++stack;
+        }
+        if (negChanges[i]){
+            --stack;
+        }
+        
+        if (stack < 0){
+            return false;
+        }
+        
+    }
+
+    assert(stack == 0); // neg values would have failed in loop above; pos values are caught in outer scope before this function call
+    
+    return true;
 }
 
 

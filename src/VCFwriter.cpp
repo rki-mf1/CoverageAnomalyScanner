@@ -81,7 +81,7 @@ int VCFwriter::write(const char* f_bam, const int tid, const int window_start_po
     // set POS
     rec->pos = window_start_pos + startPos[0]; 
     
-    // set REF + ALT                                        // TODO: more precise REF is --reference is given.
+    // set REF + ALT                                        // TODO: more precise REF if --reference is given.
     bcf_update_alleles_str(vcf_hdr, rec, "N,<DUP>");        // If no reference is given then the starting base is unknown (hence 'N'). Taking the first base according to the mapped reads might be false in case of a SNV or technical error.
 
     // set QUAL

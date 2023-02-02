@@ -20,9 +20,9 @@ override CXXFLAGS+=-I argparse/include/
 override LDLIBS+=htslib/libhts.a
 override LDLIBS+=-lz -lpthread -llzma -lbz2 -lcurl
 
-# Date and version
-DATE=on 2022-11-24
-VERSION=0.2.3
+# Date (YYYY-MM-DD) and version
+DATE=on 2023-02-02
+VERSION=0.2.4
 override CXXFLAGS+=-DDATE=\""$(DATE)"\" -DVERSION=\""$(VERSION)"\"
 
 .PHONY: all
