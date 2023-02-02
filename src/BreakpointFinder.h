@@ -11,6 +11,7 @@
 #include <cmath>       // std::sqrt
 #include <cstdint>     // fixed range integer
 #include <vector>
+#include <cassert>
 
 
 
@@ -20,9 +21,6 @@ private:
     // breakpoint threshold
     float threshold_;
 
-    const static bool POSITIVE = true;
-    const static bool NEGATIVE = false;
-
 public:
     /**
      * @fn      findBreakpoints
@@ -30,7 +28,9 @@ public:
      * @param   startPos vector to store starting SV breakpoints
      * @param   endPos vector to store ending SV break breakpoints
      * @param   inData is a vector storing the change in coverage between consecutive genomic positions
-     * @return  0 for success, 1 for failure
+     * @return  0 for success
+     *          1 for failure
+     *          2 Number of positive and negative coverage foldchanges are not equal
     */
     int findBreakpoints(std::vector<unsigned> &startPos, std::vector<unsigned> &endPos, const std::vector<float> &inData) const;
 
@@ -59,7 +59,7 @@ public:
 
 
 private:
-    // tests for greater-equal and less-equal threshold_
+    // tests for less-equal and greater-equal threshold_, respectively
     bool leqt(float val) const{ return (val <= -1*this->threshold_); }
     bool geqt(float val) const{ return (val >=    this->threshold_); }
 
@@ -70,6 +70,26 @@ private:
      * @return  standard deviation of values in inData
     */
     float sd(const std::vector<float> &inData) const;  
+
+    /**
+     * @fn      verify_DUP_pattern
+     * @brief   Function to verify if the predicted breakpoints exhibit a DUP pattern.
+     *          In a DUP pattern every starting increase in coverage requires a closing decrease in coverge.
+     * @param   posChanges is a vector of bools per bp position indicating positive fold changes
+     * @param   negChanges is a vector of bools per bp position indicating negative fold changes
+     * @return  true, if DUP pattern
+    */
+    inline bool verify_DUP_pattern(const std::vector<bool> &posChanges, const std::vector<bool> &negChanges) const;
+
+    /**
+     * @fn      verify_DEL_pattern
+     * @brief   Function to verify if the predicted breakpoints exhibit a DEL pattern.
+     *          In a DEL pattern every starting decrease in coverage requires a closing increase in coverge.
+     * @param   posChanges is a vector of bools per bp position indicating positive fold changes
+     * @param   negChanges is a vector of bools per bp position indicating negative fold changes
+     * @return  true, if DEL pattern
+    */
+    inline bool verify_DEL_pattern(const std::vector<bool> &posChanges, const std::vector<bool> &negChanges) const;
 
 };
 
