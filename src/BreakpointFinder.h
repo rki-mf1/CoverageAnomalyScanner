@@ -12,6 +12,7 @@
 #include <cstdint>     // fixed range integer
 #include <vector>
 #include <cassert>
+#include <cstdio>      // fprintf
 
 
 
